@@ -3,9 +3,11 @@ import { useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import { Group } from 'three';
 
+const MODEL_URL = 'https://pub-ef918f4135654b1caa2833736c639ae1.r2.dev/models/ship_01.glb';
+
 const Spaceship = () => {
    const group = useRef<Group>(null);
-   const { scene } = useGLTF('/models/ship.glb');
+   const { scene } = useGLTF(MODEL_URL);
 
    // Subtle hover + slow roll to keep the model alive.
    useFrame(({ clock }) => {
@@ -28,6 +30,6 @@ const Spaceship = () => {
    );
 };
 
-useGLTF.preload('/models/ship.glb');
+useGLTF.preload(MODEL_URL);
 
 export default Spaceship;
