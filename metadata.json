@@ -1,0 +1,5 @@
+{
+  "name": "EVE-Style Ship Viewer",
+  "description": "A high-fidelity 3D model inspector with an immersive sci-fi galaxy background, featuring EVE Online inspired UI and procedural spaceship rendering.",
+  "requestFramePermissions": []
+}
