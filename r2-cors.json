@@ -1,8 +1,19 @@
 [
   {
-    "AllowedOrigins": ["*"],
+    "AllowedOrigins": [
+      "http://localhost:3000",
+      "http://localhost:3001",
+      "http://localhost:3002",
+      "http://localhost:3003",
+      "http://localhost:3004",
+      "http://localhost:3005",
+      "http://localhost:4000",
+      "https://eve-ss-empire-eve.pages.dev",
+      "https://eve-star-ship-web.pages.dev"
+    ],
     "AllowedMethods": ["GET", "HEAD"],
-    "AllowedHeaders": ["*"],
-    "MaxAgeSeconds": 86400
+    "AllowedHeaders": ["*", "Range"],
+    "ExposeHeaders": ["Accept-Ranges", "Content-Length", "Content-Range", "ETag"],
+    "MaxAgeSeconds": 3600
   }
 ]

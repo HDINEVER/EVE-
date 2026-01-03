@@ -4,14 +4,17 @@ import { OrbitControls, PerspectiveCamera, Grid, Lightformer, Environment } from
 import Spaceship from './Spaceship';
 import Starfield from './Starfield';
 import LoadingScreen from '../UI/LoadingScreen';
-import { ViewMode } from '../../types';
+import { ViewMode, ShipConfig } from '../../types';
 
 interface SceneViewerProps {
   mode: ViewMode;
   isRotating: boolean;
+  shipConfig: ShipConfig;
+  themeColor: string;
+  glowColor: string;
 }
 
-const SceneViewer: React.FC<SceneViewerProps> = ({ mode, isRotating }) => {
+const SceneViewer: React.FC<SceneViewerProps> = ({ mode, isRotating, shipConfig, themeColor, glowColor }) => {
   return (
     <div className="w-full h-full bg-black">
       {/* Loading Progress Overlay */}
@@ -24,14 +27,14 @@ const SceneViewer: React.FC<SceneViewerProps> = ({ mode, isRotating }) => {
         <ambientLight intensity={0.8} />
         {/* Key Light (Sun) */}
         <directionalLight position={[10, 10, 5]} intensity={3} color="#fff" castShadow />
-        {/* Rim Light (Blue) */}
-        <spotLight position={[-10, 0, -10]} intensity={8} color="#0ea5e9" angle={0.5} penumbra={1} />
+        {/* Rim Light (Themed) */}
+        <spotLight position={[-10, 0, -10]} intensity={8} color={themeColor} angle={0.5} penumbra={1} />
         {/* Bounce/Fill Light (Warm) */}
         <pointLight position={[0, -10, 0]} intensity={1} color="#d97706" />
         {/* Front Fill Light */}
         <pointLight position={[0, 5, 10]} intensity={2} color="#ffffff" />
-        {/* Back Rim Light */}
-        <pointLight position={[0, 2, -10]} intensity={1.5} color="#06b6d4" />
+        {/* Back Rim Light (Themed) */}
+        <pointLight position={[0, 2, -10]} intensity={1.5} color={themeColor} />
 
         {/* HDR Environment for realistic reflections */}
         <Suspense fallback={null}>
@@ -44,7 +47,7 @@ const SceneViewer: React.FC<SceneViewerProps> = ({ mode, isRotating }) => {
         {/* Additional Lightformers for EVE style */}
         <Environment background={false}>
           <Lightformer intensity={1.5} position={[5, 5, 5]} scale={[5, 5, 1]} color="#fff" />
-          <Lightformer intensity={2} position={[-10, 2, 0]} scale={[1, 10, 10]} color="#0ea5e9" />
+          <Lightformer intensity={2} position={[-10, 2, 0]} scale={[1, 10, 10]} color={themeColor} />
         </Environment>
 
         {/* Background */}
@@ -53,7 +56,12 @@ const SceneViewer: React.FC<SceneViewerProps> = ({ mode, isRotating }) => {
         {/* The Subject (only the model should suspend while loading) */}
         <Suspense fallback={null}>
           <group>
-            <Spaceship />
+            <Spaceship 
+              modelPath={shipConfig.modelPath}
+              scale={shipConfig.scale}
+              position={shipConfig.position}
+              rotation={shipConfig.rotation}
+            />
           </group>
         </Suspense>
 
@@ -67,8 +75,8 @@ const SceneViewer: React.FC<SceneViewerProps> = ({ mode, isRotating }) => {
               cellSize={1}
               sectionSize={5}
               fadeDistance={30}
-              sectionColor="#0ea5e9"
-              cellColor="#0ea5e9"
+              sectionColor={themeColor}
+              cellColor={themeColor}
               sectionThickness={1.5}
               cellThickness={0.6}
             />

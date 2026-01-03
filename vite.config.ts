@@ -41,6 +41,12 @@ export default defineConfig(({ mode }) => {
       server: {
         port: 3000,
         host: '0.0.0.0',
+        // 添加 CORS 和 iframe 支持（仅用于本地开发）
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'X-Frame-Options': 'ALLOWALL',
+          'Content-Security-Policy': "frame-ancestors 'self' http://localhost:* http://127.0.0.1:* https://*.pages.dev"
+        }
       },
       plugins: [react(), cloudflareFilesPlugin()],
       define: {

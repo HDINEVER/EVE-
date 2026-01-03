@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EVE Online 飞船展示 - iframe 演示</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
+      color: #fff;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 2.5rem;
+      background: linear-gradient(90deg, #d4af37, #44ffdd, #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #888;
+      font-size: 1.1rem;
+    }
+
+    .faction-selector {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+
+    .faction-btn {
+      padding: 12px 24px;
+      border: 2px solid transparent;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .faction-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .faction-btn.amarr {
+      border-color: #d4af37;
+    }
+
+    .faction-btn.amarr:hover,
+    .faction-btn.amarr.active {
+      background: rgba(212, 175, 55, 0.2);
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+    }
+
+    .faction-btn.caldari {
+      border-color: #44ffdd;
+    }
+
+    .faction-btn.caldari:hover,
+    .faction-btn.caldari.active {
+      background: rgba(68, 255, 221, 0.2);
+      box-shadow: 0 0 20px rgba(68, 255, 221, 0.5);
+    }
+
+    .faction-btn.gallente {
+      border-color: #a855f7;
+    }
+
+    .faction-btn.gallente:hover,
+    .faction-btn.gallente.active {
+      background: rgba(168, 85, 247, 0.2);
+      box-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
+    }
+
+    .ship-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .ship-card {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .ship-card:hover {
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .ship-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .ship-name {
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    .ship-class {
+      font-size: 0.9rem;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .ship-viewer {
+      width: 100%;
+      height: 400px;
+      border: none;
+      border-radius: 8px;
+      background: #000;
+    }
+
+    .load-btn {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .load-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    .load-btn:active {
+      transform: scale(0.98);
+    }
+
+    .info-panel {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 30px;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .info-panel h2 {
+      margin-bottom: 15px;
+      font-size: 1.5rem;
+    }
+
+    .info-panel code {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      color: #44ffdd;
+    }
+
+    .info-panel pre {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 15px;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 10px 0;
+    }
+
+    @media (max-width: 768px) {
+      .ship-grid {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🚀 EVE Online 飞船 3D 展示</h1>
+    <p class="subtitle">通过 iframe 嵌入 - 动态切换演示</p>
+
+    <div class="faction-selector">
+      <button class="faction-btn amarr active" onclick="showFaction('amarr')">
+        ⚡ 艾玛帝国 (Amarr)
+      </button>
+      <button class="faction-btn caldari" onclick="showFaction('caldari')">
+        🔷 加达里合众国 (Caldari)
+      </button>
+      <button class="faction-btn gallente" onclick="showFaction('gallente')">
+        💜 盖伦特联邦 (Gallente)
+      </button>
+    </div>
+
+    <div class="ship-grid" id="shipGrid">
+      <!-- Ships will be dynamically loaded here -->
+    </div>
+
+    <div class="info-panel">
+      <h2>📖 使用说明</h2>
+      <p>这个页面演示了如何通过 iframe 嵌入 EVE Online 3D 飞船模型展示页面。</p>
+      <br>
+      <p><strong>URL 格式：</strong></p>
+      <pre><code>https://eve-ss-empire-eve.pages.dev/?ship={shipId}&faction={factionId}</code></pre>
+      <br>
+      <p><strong>基础 iframe 代码：</strong></p>
+      <pre><code>&lt;iframe 
+  src="https://eve-ss-empire-eve.pages.dev/?ship=imperial&faction=amarr"
+  width="800"
+  height="600"
+  frameborder="0"
+  allowfullscreen
+&gt;&lt;/iframe&gt;</code></pre>
+    </div>
+  </div>
+
+  <script>
+    const ships = {
+      amarr: [
+        { id: 'imperial', name: '帝国号', englishName: 'Imperial Issue', class: '战列舰' },
+        { id: 'paladin', name: '先锋者级', englishName: 'Paladin', class: '掠夺舰' },
+        { id: 'avatar', name: '神使级泰坦', englishName: 'Avatar', class: '泰坦' }
+      ],
+      caldari: [
+        { id: 'naga', name: '娜迦级', englishName: 'Naga', class: '战列巡洋舰' },
+        { id: 'cerberus', name: '希尔博拉斯', englishName: 'Cerberus', class: '重型突击巡洋舰' },
+        { id: 'corax', name: '渡鸦级', englishName: 'Corax', class: '驱逐舰' }
+      ],
+      gallente: [
+        { id: 'tristan', name: '特里斯坦', englishName: 'Tristan', class: '护卫舰' },
+        { id: 'thalia', name: '塔利亚', englishName: 'Thalia', class: '后勤护卫舰' },
+        { id: 'atron', name: '阿特龙级', englishName: 'Atron', class: '截击舰' }
+      ]
+    };
+
+    const BASE_URL = 'https://eve-ss-empire-eve.pages.dev';
+    // 本地测试用：const BASE_URL = 'http://localhost:5173';
+
+    function showFaction(faction) {
+      // Update button states
+      document.querySelectorAll('.faction-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      document.querySelector(`.faction-btn.${faction}`).classList.add('active');
+
+      // Load ships for this faction
+      const shipGrid = document.getElementById('shipGrid');
+      shipGrid.innerHTML = '';
+
+      ships[faction].forEach(ship => {
+        const card = createShipCard(ship, faction);
+        shipGrid.appendChild(card);
+      });
+    }
+
+    function createShipCard(ship, faction) {
+      const card = document.createElement('div');
+      card.className = 'ship-card';
+      
+      const url = `${BASE_URL}/?ship=${ship.id}&faction=${faction}`;
+      
+      card.innerHTML = `
+        <div class="ship-header">
+          <div>
+            <div class="ship-name">${ship.name}</div>
+            <div style="font-size: 0.9rem; color: #aaa;">${ship.englishName}</div>
+          </div>
+          <div class="ship-class">${ship.class}</div>
+        </div>
+        <iframe 
+          class="ship-viewer"
+          id="viewer-${ship.id}"
+          data-src="${url}"
+          style="background: rgba(0,0,0,0.5);"
+        ></iframe>
+        <button class="load-btn" onclick="loadShip('${ship.id}', '${url}')">
+          🔄 加载 3D 模型
+        </button>
+      `;
+      
+      return card;
+    }
+
+    function loadShip(shipId, url) {
+      const iframe = document.getElementById(`viewer-${shipId}`);
+      iframe.src = url;
+      
+      // Update button text
+      const button = iframe.nextElementSibling;
+      button.textContent = '✅ 已加载';
+      button.disabled = true;
+      button.style.opacity = '0.6';
+    }
+
+    // Load Amarr faction by default
+    showFaction('amarr');
+  </script>
+</body>
+</html>

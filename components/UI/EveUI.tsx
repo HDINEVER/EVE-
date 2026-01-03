@@ -9,6 +9,8 @@ interface EveUIProps {
   onModeChange: (mode: ViewMode) => void;
   isRotating: boolean;
   onToggleRotation: () => void;
+  themeColor?: string;
+  factionName?: string;
 }
 
 // Hook to track window size
@@ -24,7 +26,15 @@ const useWindowSize = () => {
   return size;
 };
 
-const EveUI: React.FC<EveUIProps> = ({ stats, currentMode, onModeChange, isRotating, onToggleRotation }) => {
+const EveUI: React.FC<EveUIProps> = ({ 
+  stats, 
+  currentMode, 
+  onModeChange, 
+  isRotating, 
+  onToggleRotation,
+  themeColor = '#0ea5e9',
+  factionName = 'Unknown Faction'
+}) => {
   const [activeTab, setActiveTab] = useState<'attributes' | 'fitting'>('attributes');
   const [leftHovered, setLeftHovered] = useState(false);
   const [rightHovered, setRightHovered] = useState(false);
@@ -59,13 +69,29 @@ const EveUI: React.FC<EveUIProps> = ({ stats, currentMode, onModeChange, isRotat
         transition={{ duration: 0.5, ease: "easeOut" }}
       >
         <div className="flex flex-col gap-1">
-          <h1 className={`font-bold tracking-widest text-cyan-100 drop-shadow-[0_0_10px_rgba(34,211,238,0.5)] uppercase font-['Share_Tech_Mono'] ${isSmallScreen ? 'text-xl' : isMediumScreen ? 'text-2xl' : 'text-4xl'}`}>
+          <h1 
+            className={`font-bold tracking-widest text-cyan-100 drop-shadow-[0_0_10px_rgba(34,211,238,0.5)] uppercase font-['Share_Tech_Mono'] ${isSmallScreen ? 'text-xl' : isMediumScreen ? 'text-2xl' : 'text-4xl'}`}
+            style={{ 
+              color: themeColor,
+              textShadow: `0 0 10px ${themeColor}80`
+            }}
+          >
             {stats.name}
           </h1>
           <div className={`flex items-center gap-2 text-cyan-500 font-semibold tracking-wider uppercase ${isSmallScreen ? 'text-[10px]' : 'text-sm'}`}>
-            <span className="bg-cyan-950/50 px-2 py-0.5 border border-cyan-800 rounded-sm">{stats.class} Class</span>
+            <span 
+              className="bg-cyan-950/50 px-2 py-0.5 border border-cyan-800 rounded-sm"
+              style={{ 
+                borderColor: `${themeColor}80`,
+                backgroundColor: `${themeColor}20`
+              }}
+            >
+              {stats.class} Class
+            </span>
             <span className="text-slate-500 hidden sm:inline">|</span>
             <span className="hidden sm:inline">{stats.manufacturer}</span>
+            <span className="text-slate-500 hidden md:inline">|</span>
+            <span className="hidden md:inline" style={{ color: themeColor }}>{factionName}</span>
           </div>
         </div>
 
