@@ -1,2 +1,5 @@
-# SPA 路由支持 - 所有路径重定向到 index.html
-/*    /index.html   200
+# SPA 路由支持 - 静态资源优先，其他路径重定向到 index.html
+/models/*  200
+/assets/*  200
+/hdri/*    200
+/*         /index.html   200
