@@ -2,7 +2,7 @@
 import { ShipConfig } from '../types';
 
 // 默认模型URL，从 R2 CDN 加载
-const DEFAULT_MODEL_URL = 'https://pub-ef918f4135654b1caa2833736c639ae1.r2.dev/eve-ss-empire-eve/models/ship_optimized.glb';
+const DEFAULT_MODEL_URL = 'https://pub-ef918f4135654b1caa2833736c639ae1.r2.dev/models/ship_optimized.glb';
 
 export const SHIP_CONFIGS: Record<string, ShipConfig> = {
   // ========== 艾玛帝国 (Amarr Empire) ==========
