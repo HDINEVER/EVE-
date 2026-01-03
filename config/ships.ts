@@ -1,8 +1,14 @@
 // 飞船配置数据 (9艘飞船)
 import { ShipConfig } from '../types';
 
-// 默认模型URL，从 R2 CDN 加载
-const DEFAULT_MODEL_URL = 'https://pub-ef918f4135654b1caa2833736c639ae1.r2.dev/models/ship_optimized.glb';
+// R2 CDN 基础路径
+const R2_BASE_URL = 'https://pub-ef918f4135654b1caa2833736c639ae1.r2.dev/models';
+
+// 生成模型URL的辅助函数
+const getModelUrl = (modelName: string) => `${R2_BASE_URL}/${modelName}_optimized.glb`;
+
+// Imperial 使用原有的 ship_optimized.glb
+const IMPERIAL_MODEL_URL = `${R2_BASE_URL}/ship_optimized.glb`;
 
 export const SHIP_CONFIGS: Record<string, ShipConfig> = {
   // ========== 艾玛帝国 (Amarr Empire) ==========
@@ -13,7 +19,7 @@ export const SHIP_CONFIGS: Record<string, ShipConfig> = {
     class: 'Battleship',
     manufacturer: 'Amarr Empire',
     faction: 'amarr',
-    modelPath: DEFAULT_MODEL_URL,
+    modelPath: IMPERIAL_MODEL_URL,
     scale: 1.3,
     stats: {
       name: "Imperial Issue",
@@ -37,7 +43,7 @@ export const SHIP_CONFIGS: Record<string, ShipConfig> = {
     class: 'Marauder',
     manufacturer: 'Amarr Empire',
     faction: 'amarr',
-    modelPath: DEFAULT_MODEL_URL,
+    modelPath: getModelUrl('paladin'),
     scale: 1.3,
     stats: {
       name: "Paladin",
@@ -61,7 +67,7 @@ export const SHIP_CONFIGS: Record<string, ShipConfig> = {
     class: 'Titan',
     manufacturer: 'Amarr Empire',
     faction: 'amarr',
-    modelPath: DEFAULT_MODEL_URL,
+    modelPath: getModelUrl('avatar'),
     scale: 1.9,
     stats: {
       name: "Avatar",
@@ -87,7 +93,7 @@ export const SHIP_CONFIGS: Record<string, ShipConfig> = {
     class: 'Battlecruiser',
     manufacturer: 'Caldari State',
     faction: 'caldari',
-    modelPath: DEFAULT_MODEL_URL,
+    modelPath: getModelUrl('naga'),
     scale: 1.3,
     stats: {
       name: "Naga",
@@ -111,7 +117,7 @@ export const SHIP_CONFIGS: Record<string, ShipConfig> = {
     class: 'Heavy Assault Cruiser',
     manufacturer: 'Caldari State',
     faction: 'caldari',
-    modelPath: DEFAULT_MODEL_URL,
+    modelPath: getModelUrl('cerberus'),
     scale: 1.3,
     stats: {
       name: "Cerberus",
@@ -135,7 +141,7 @@ export const SHIP_CONFIGS: Record<string, ShipConfig> = {
     class: 'Destroyer',
     manufacturer: 'Caldari State',
     faction: 'caldari',
-    modelPath: DEFAULT_MODEL_URL,
+    modelPath: getModelUrl('corax'),
     scale: 1.3,
     stats: {
       name: "Corax",
@@ -161,7 +167,7 @@ export const SHIP_CONFIGS: Record<string, ShipConfig> = {
     class: 'Frigate',
     manufacturer: 'Gallente Federation',
     faction: 'gallente',
-    modelPath: DEFAULT_MODEL_URL,
+    modelPath: getModelUrl('tristan'),
     scale: 1.3,
     stats: {
       name: "Tristan",
@@ -185,7 +191,7 @@ export const SHIP_CONFIGS: Record<string, ShipConfig> = {
     class: 'Logistics Frigate',
     manufacturer: 'Gallente Federation',
     faction: 'gallente',
-    modelPath: DEFAULT_MODEL_URL,
+    modelPath: getModelUrl('thalia'),
     scale: 1.3,
     stats: {
       name: "Thalia",
@@ -209,7 +215,7 @@ export const SHIP_CONFIGS: Record<string, ShipConfig> = {
     class: 'Interceptor',
     manufacturer: 'Gallente Federation',
     faction: 'gallente',
-    modelPath: DEFAULT_MODEL_URL,
+    modelPath: getModelUrl('atron'),
     scale: 1.3,
     stats: {
       name: "Atron",
@@ -230,3 +236,14 @@ export const SHIP_CONFIGS: Record<string, ShipConfig> = {
 
 // 默认飞船（如果URL参数无效）
 export const DEFAULT_SHIP_ID = 'imperial';
+
+// 辅助函数：获取所有飞船ID
+export const getAllShipIds = (): string[] => Object.keys(SHIP_CONFIGS);
+
+// 辅助函数：按势力分组获取飞船
+export const getShipsByFaction = (factionId: string): ShipConfig[] => {
+  return Object.values(SHIP_CONFIGS).filter(ship => ship.faction === factionId);
+};
+
+// 辅助函数：获取所有飞船配置数组
+export const getAllShips = (): ShipConfig[] => Object.values(SHIP_CONFIGS);

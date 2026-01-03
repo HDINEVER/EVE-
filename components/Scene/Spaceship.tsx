@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import { Group } from 'three';
@@ -6,11 +6,8 @@ import { Group } from 'three';
 // Draco 解码器路径 (Google CDN)
 const DRACO_PATH = 'https://www.gstatic.com/draco/versioned/decoders/1.5.6/';
 
-// 默认模型URL（Imperial Issue），从 R2 CDN 加载
-const DEFAULT_MODEL_URL = 'https://pub-ef918f4135654b1caa2833736c639ae1.r2.dev/models/ship_optimized.glb';
-
 interface SpaceshipProps {
-  modelPath?: string;
+  modelPath: string;
   scale?: number;
   position?: [number, number, number];
   rotation?: [number, number, number];
@@ -23,10 +20,8 @@ const Spaceship: React.FC<SpaceshipProps> = ({
   rotation = [0, 0, 0]
 }) => {
    const group = useRef<Group>(null);
-   
-   // 如果提供了本地路径，使用本地模型；否则使用默认的R2模型
-   const modelUrl = modelPath || DEFAULT_MODEL_URL;
-   const { scene } = useGLTF(modelUrl, DRACO_PATH);
+   // 使用传入的模型路径加载 GLB
+   const { scene } = useGLTF(modelPath, DRACO_PATH);
 
    // Subtle hover + slow roll to keep the model alive.
    useFrame(({ clock }) => {
@@ -49,8 +44,5 @@ const Spaceship: React.FC<SpaceshipProps> = ({
       />
    );
 };
-
-// 预加载默认模型
-useGLTF.preload(DEFAULT_MODEL_URL, DRACO_PATH);
 
 export default Spaceship;

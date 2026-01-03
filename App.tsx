@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import SceneViewer from './components/Scene/SceneViewer';
 import EveUI from './components/UI/EveUI';
+import ShipSelector from './components/UI/ShipSelector';
 import { ViewMode } from './types';
 import { useShipParams } from './hooks/useShipParams';
 import { SHIP_CONFIGS, DEFAULT_SHIP_ID } from './config/ships';
@@ -75,6 +76,13 @@ const App: React.FC = () => {
         style={{
           background: `radial-gradient(circle at center, transparent 50%, ${currentTheme.background}cc 100%)`
         }}
+      />
+
+      {/* Ship Selector */}
+      <ShipSelector
+        currentShipId={shipId}
+        currentFactionId={factionId}
+        themeColor={currentTheme.primary}
       />
 
     </div>

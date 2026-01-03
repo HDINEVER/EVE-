@@ -26,6 +26,8 @@ dist-ssr
 *.sln
 *.sw?
 
-# Large model files (stored in Cloudflare R2)
-public/models/*.glb
-public/models/*.gltf
+# Large model files
+# 保留原始模型文件 (用于本地开发)
+# 但排除优化后的模型 (会上传到 R2)
+public/models/optimized/
+public/models/ship.glb
