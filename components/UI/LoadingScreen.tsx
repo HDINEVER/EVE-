@@ -4,14 +4,61 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 // 加载状态消息
 const loadingMessages = [
-  { threshold: 0, text: 'Establishing connection...' },
-  { threshold: 10, text: 'Loading ship geometry...' },
-  { threshold: 30, text: 'Processing materials...' },
-  { threshold: 50, text: 'Applying textures...' },
-  { threshold: 70, text: 'Compiling shaders...' },
-  { threshold: 85, text: 'Finalizing render...' },
-  { threshold: 95, text: 'Almost ready...' },
+  { threshold: 0, text: 'Establishing secure connection...' },
+  { threshold: 10, text: 'Loading ship geometry data...' },
+  { threshold: 30, text: 'Processing hull materials...' },
+  { threshold: 50, text: 'Applying faction textures...' },
+  { threshold: 70, text: 'Compiling render shaders...' },
+  { threshold: 85, text: 'Initializing holographic display...' },
+  { threshold: 95, text: 'Systems coming online...' },
 ];
+
+// Hexagonal grid pattern for background
+const HexGrid: React.FC = () => (
+  <div className="absolute inset-0 overflow-hidden opacity-[0.03]">
+    <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="hexagons" width="50" height="43.4" patternUnits="userSpaceOnUse" patternTransform="scale(2)">
+          <polygon 
+            points="25,0 50,14.4 50,43.3 25,57.7 0,43.3 0,14.4" 
+            fill="none" 
+            stroke="rgba(34,211,238,0.5)" 
+            strokeWidth="0.5"
+          />
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#hexagons)" />
+    </svg>
+  </div>
+);
+
+// Floating particles effect
+const FloatingParticles: React.FC = () => (
+  <div className="absolute inset-0 overflow-hidden">
+    {[...Array(20)].map((_, i) => (
+      <motion.div
+        key={i}
+        className="absolute w-1 h-1 rounded-full bg-cyan-400/30"
+        style={{
+          left: `${Math.random() * 100}%`,
+          top: `${Math.random() * 100}%`,
+        }}
+        animate={{
+          y: [-20, 20],
+          x: [-10, 10],
+          opacity: [0.2, 0.6, 0.2],
+          scale: [0.8, 1.2, 0.8],
+        }}
+        transition={{
+          duration: 3 + Math.random() * 2,
+          repeat: Infinity,
+          delay: Math.random() * 2,
+          ease: "easeInOut",
+        }}
+      />
+    ))}
+  </div>
+);
 
 const LoadingScreen: React.FC = () => {
   const { progress, active } = useProgress();
@@ -75,16 +122,51 @@ const LoadingScreen: React.FC = () => {
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.8, ease: 'easeOut' }}
-          className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-black"
+          className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-black overflow-hidden"
         >
-          {/* Outer glow ring */}
+          {/* Background Effects */}
+          <HexGrid />
+          <FloatingParticles />
+          
+          {/* Animated Background Glow */}
+          <motion.div 
+            className="absolute w-[80vw] h-[80vw] rounded-full"
+            style={{
+              background: 'radial-gradient(circle, rgba(34,211,238,0.08) 0%, rgba(34,211,238,0.02) 40%, transparent 70%)',
+              filter: 'blur(60px)',
+            }}
+            animate={{ 
+              scale: [1, 1.2, 1],
+              opacity: [0.3, 0.5, 0.3],
+            }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+          />
+          
+          {/* Secondary Glow */}
+          <motion.div 
+            className="absolute w-[60vw] h-[60vw] rounded-full"
+            style={{
+              background: 'radial-gradient(circle, rgba(139,92,246,0.06) 0%, transparent 60%)',
+              filter: 'blur(80px)',
+            }}
+            animate={{ 
+              scale: [1.1, 0.9, 1.1],
+              x: [50, -50, 50],
+            }}
+            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+          />
+
+          {/* Main Loading Ring */}
           <div className="relative w-48 h-48 mb-8">
-            {/* Pulsing background glow */}
+            {/* Outer Glow Ring */}
             <motion.div
-              className="absolute inset-0 rounded-full bg-cyan-500/10"
+              className="absolute inset-[-20px] rounded-full"
+              style={{
+                background: 'radial-gradient(circle, rgba(34,211,238,0.15) 0%, transparent 70%)',
+              }}
               animate={{
-                scale: [1, 1.1, 1],
-                opacity: [0.3, 0.5, 0.3],
+                scale: [1, 1.15, 1],
+                opacity: [0.4, 0.7, 0.4],
               }}
               transition={{
                 duration: 2,
@@ -95,149 +177,276 @@ const LoadingScreen: React.FC = () => {
 
             {/* Background ring */}
             <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
+              {/* Outer decorative ring */}
+              <circle
+                cx="50"
+                cy="50"
+                r="48"
+                fill="none"
+                stroke="rgba(34,211,238,0.1)"
+                strokeWidth="0.5"
+              />
+              
+              {/* Main track */}
               <circle
                 cx="50"
                 cy="50"
                 r="45"
                 fill="none"
-                stroke="#1e293b"
-                strokeWidth="2"
+                stroke="rgba(255,255,255,0.05)"
+                strokeWidth="3"
               />
-              {/* Progress ring with smooth transition */}
+              
+              {/* Progress ring with glow */}
               <motion.circle
                 cx="50"
                 cy="50"
                 r="45"
                 fill="none"
-                stroke="url(#gradient)"
+                stroke="url(#progressGradient)"
                 strokeWidth="3"
                 strokeLinecap="round"
                 strokeDasharray="283"
                 strokeDashoffset={283 - (displayProgress / 100) * 283}
-                className="drop-shadow-[0_0_10px_rgba(34,211,238,0.5)]"
-                style={{ transition: 'stroke-dashoffset 0.1s ease-out' }}
+                style={{ 
+                  transition: 'stroke-dashoffset 0.15s ease-out',
+                  filter: 'drop-shadow(0 0 8px rgba(34,211,238,0.6))',
+                }}
               />
-              {/* Rotating activity indicator */}
-              <motion.circle
-                cx="50"
-                cy="50"
-                r="42"
-                fill="none"
-                stroke="#0ea5e9"
-                strokeWidth="1"
-                strokeDasharray="10 20"
-                opacity={0.5}
+              
+              {/* Inner rotating ring */}
+              <motion.g
                 animate={{ rotate: 360 }}
-                transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
+                transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
                 style={{ transformOrigin: 'center' }}
-              />
+              >
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="40"
+                  fill="none"
+                  stroke="rgba(34,211,238,0.15)"
+                  strokeWidth="1"
+                  strokeDasharray="8 16"
+                />
+              </motion.g>
+              
+              {/* Outer rotating ring (opposite direction) */}
+              <motion.g
+                animate={{ rotate: -360 }}
+                transition={{ duration: 12, repeat: Infinity, ease: 'linear' }}
+                style={{ transformOrigin: 'center' }}
+              >
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="47"
+                  fill="none"
+                  stroke="rgba(34,211,238,0.1)"
+                  strokeWidth="0.5"
+                  strokeDasharray="4 8"
+                />
+              </motion.g>
+              
               <defs>
-                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#06b6d4" />
-                  <stop offset="100%" stopColor="#0ea5e9" />
+                <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#22d3ee" />
+                  <stop offset="50%" stopColor="#06b6d4" />
+                  <stop offset="100%" stopColor="#0891b2" />
                 </linearGradient>
               </defs>
             </svg>
             
             {/* Center content */}
             <div className="absolute inset-0 flex flex-col items-center justify-center">
+              {/* Glass effect background */}
+              <div 
+                className="absolute w-24 h-24 rounded-full"
+                style={{
+                  background: 'rgba(0,0,0,0.5)',
+                  backdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(34,211,238,0.2)',
+                }}
+              />
+              
               <motion.span 
-                className="text-4xl font-bold text-cyan-400 font-mono drop-shadow-[0_0_10px_rgba(34,211,238,0.5)]"
+                className="relative text-4xl font-bold text-cyan-400 font-mono"
+                style={{
+                  textShadow: '0 0 20px rgba(34,211,238,0.6), 0 0 40px rgba(34,211,238,0.3)',
+                }}
                 animate={{ opacity: [0.8, 1, 0.8] }}
                 transition={{ duration: 1.5, repeat: Infinity }}
               >
-                {Math.round(displayProgress)}%
+                {Math.round(displayProgress)}
+                <span className="text-lg text-cyan-600">%</span>
               </motion.span>
             </div>
 
-            {/* Orbiting dot indicator */}
-            <motion.div
-              className="absolute w-2 h-2 bg-cyan-400 rounded-full shadow-[0_0_10px_rgba(34,211,238,0.8)]"
-              style={{
-                top: '50%',
-                left: '50%',
-                marginTop: '-4px',
-                marginLeft: '-4px',
-              }}
-              animate={{
-                x: [0, 70, 0, -70, 0],
-                y: [-70, 0, 70, 0, -70],
-              }}
-              transition={{
-                duration: 4,
-                repeat: Infinity,
-                ease: 'linear',
-              }}
-            />
+            {/* Orbiting dots */}
+            {[0, 120, 240].map((angle, i) => (
+              <motion.div
+                key={i}
+                className="absolute w-2 h-2 rounded-full"
+                style={{
+                  top: '50%',
+                  left: '50%',
+                  marginTop: '-4px',
+                  marginLeft: '-4px',
+                  background: 'radial-gradient(circle, #22d3ee, #0891b2)',
+                  boxShadow: '0 0 10px rgba(34,211,238,0.8), 0 0 20px rgba(34,211,238,0.4)',
+                }}
+                animate={{
+                  rotate: [angle, angle + 360],
+                }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: 'linear',
+                }}
+              >
+                <motion.div
+                  style={{
+                    position: 'absolute',
+                    top: '-76px',
+                    left: '50%',
+                    marginLeft: '-4px',
+                    width: '8px',
+                    height: '8px',
+                    borderRadius: '50%',
+                    background: i === 0 ? '#22d3ee' : 'rgba(34,211,238,0.5)',
+                    boxShadow: i === 0 ? '0 0 15px rgba(34,211,238,1)' : '0 0 8px rgba(34,211,238,0.5)',
+                  }}
+                />
+              </motion.div>
+            ))}
           </div>
 
           {/* Loading text */}
-          <div className="text-center">
-            <h2 className="text-xl font-bold text-cyan-100 tracking-widest uppercase mb-2 font-['Share_Tech_Mono']">
+          <div className="text-center relative z-10">
+            {/* Faction Badge */}
+            <motion.div 
+              className="flex items-center justify-center gap-2 mb-3"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+            >
+              <div className="w-8 h-[1px] bg-gradient-to-r from-transparent to-cyan-500/50" />
+              <span className="text-[10px] text-cyan-600 uppercase tracking-[0.4em] font-mono">EMPIRE SYSTEM</span>
+              <div className="w-8 h-[1px] bg-gradient-to-l from-transparent to-cyan-500/50" />
+            </motion.div>
+            
+            <h2 
+              className="text-xl font-bold tracking-[0.3em] uppercase mb-3 font-['Share_Tech_Mono']"
+              style={{
+                color: '#e2e8f0',
+                textShadow: '0 0 30px rgba(34,211,238,0.4)',
+              }}
+            >
               INITIALIZING SYSTEMS
             </h2>
-            <motion.p 
+            
+            <motion.div 
+              className="h-6 flex items-center justify-center"
               key={currentMessage}
               initial={{ opacity: 0, y: 5 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-sm text-slate-400 tracking-wider h-5"
+              transition={{ duration: 0.3 }}
             >
-              {currentMessage}
-            </motion.p>
+              <p className="text-sm text-gray-500 tracking-wider font-mono">
+                {currentMessage}
+              </p>
+            </motion.div>
           </div>
 
-          {/* Data stream effect */}
-          <div className="absolute left-8 top-1/4 bottom-1/4 w-px overflow-hidden opacity-30">
+          {/* Side Data Streams */}
+          <div className="absolute left-8 top-1/4 bottom-1/4 w-px overflow-hidden">
             <motion.div
-              className="w-full bg-gradient-to-b from-transparent via-cyan-500 to-transparent"
-              style={{ height: '200%' }}
+              className="w-full h-[200%]"
+              style={{
+                background: 'linear-gradient(to bottom, transparent, rgba(34,211,238,0.4), transparent)',
+              }}
               animate={{ y: ['-50%', '0%'] }}
-              transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
             />
           </div>
-          <div className="absolute right-8 top-1/4 bottom-1/4 w-px overflow-hidden opacity-30">
+          <div className="absolute right-8 top-1/4 bottom-1/4 w-px overflow-hidden">
             <motion.div
-              className="w-full bg-gradient-to-b from-transparent via-cyan-500 to-transparent"
-              style={{ height: '200%' }}
+              className="w-full h-[200%]"
+              style={{
+                background: 'linear-gradient(to bottom, transparent, rgba(34,211,238,0.4), transparent)',
+              }}
               animate={{ y: ['0%', '-50%'] }}
-              transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
             />
           </div>
 
-          {/* Animated scan line */}
+          {/* Horizontal Scan Line */}
           <motion.div
-            className="absolute left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent"
-            initial={{ top: '20%' }}
-            animate={{ top: '80%' }}
+            className="absolute left-0 w-full h-[2px]"
+            style={{
+              background: 'linear-gradient(to right, transparent, rgba(34,211,238,0.5), transparent)',
+              boxShadow: '0 0 20px rgba(34,211,238,0.3)',
+            }}
+            initial={{ top: '15%' }}
+            animate={{ top: '85%' }}
             transition={{
-              duration: 2,
+              duration: 3,
               repeat: Infinity,
               repeatType: 'reverse',
-              ease: 'linear',
+              ease: 'easeInOut',
             }}
           />
 
           {/* Activity dots */}
-          <div className="absolute bottom-20 flex gap-2">
-            {[0, 1, 2].map((i) => (
+          <div className="absolute bottom-20 flex gap-3">
+            {[0, 1, 2, 3, 4].map((i) => (
               <motion.div
                 key={i}
-                className="w-1.5 h-1.5 rounded-full bg-cyan-500"
-                animate={{ opacity: [0.3, 1, 0.3] }}
+                className="w-1.5 h-1.5 rounded-full"
+                style={{
+                  background: 'radial-gradient(circle, #22d3ee, #0891b2)',
+                }}
+                animate={{ 
+                  opacity: [0.2, 1, 0.2],
+                  scale: [0.8, 1.2, 0.8],
+                }}
                 transition={{
-                  duration: 1,
+                  duration: 1.2,
                   repeat: Infinity,
-                  delay: i * 0.2,
+                  delay: i * 0.15,
                 }}
               />
             ))}
           </div>
 
-          {/* Corner decorations */}
-          <div className="absolute top-4 left-4 w-8 h-8 border-l-2 border-t-2 border-cyan-600/50" />
-          <div className="absolute top-4 right-4 w-8 h-8 border-r-2 border-t-2 border-cyan-600/50" />
-          <div className="absolute bottom-4 left-4 w-8 h-8 border-l-2 border-b-2 border-cyan-600/50" />
-          <div className="absolute bottom-4 right-4 w-8 h-8 border-r-2 border-b-2 border-cyan-600/50" />
+          {/* Corner decorations - Enhanced */}
+          <div className="absolute top-4 left-4">
+            <div className="w-12 h-12 border-l-2 border-t-2 border-cyan-500/40" />
+            <div className="absolute top-2 left-2 w-2 h-2 bg-cyan-500/60" />
+          </div>
+          <div className="absolute top-4 right-4">
+            <div className="w-12 h-12 border-r-2 border-t-2 border-cyan-500/40" />
+            <div className="absolute top-2 right-2 w-2 h-2 bg-cyan-500/60" />
+          </div>
+          <div className="absolute bottom-4 left-4">
+            <div className="w-12 h-12 border-l-2 border-b-2 border-cyan-500/40" />
+            <div className="absolute bottom-2 left-2 w-2 h-2 bg-cyan-500/60" />
+          </div>
+          <div className="absolute bottom-4 right-4">
+            <div className="w-12 h-12 border-r-2 border-b-2 border-cyan-500/40" />
+            <div className="absolute bottom-2 right-2 w-2 h-2 bg-cyan-500/60" />
+          </div>
+          
+          {/* Top/Bottom Edge Lines */}
+          <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent" />
+          <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent" />
+          
+          {/* System Info Footer */}
+          <div className="absolute bottom-6 left-0 right-0 flex justify-center">
+            <span className="text-[10px] text-gray-700 font-mono tracking-wider">
+              CONCORD APPROVED • SECURE TRANSMISSION
+            </span>
+          </div>
         </motion.div>
       )}
     </AnimatePresence>

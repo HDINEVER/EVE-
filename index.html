@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" translate="no">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="google" content="notranslate" />
     <title>EVE Ship Viewer</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
@@ -13,6 +14,10 @@
         color: white;
         font-family: 'Rajdhani', sans-serif;
         overflow: hidden;
+      }
+      /* Prevent Google Translate from breaking React */
+      .notranslate {
+        transform: translateZ(0);
       }
       /* Custom Scrollbar for EVE look */
       ::-webkit-scrollbar {
@@ -40,8 +45,8 @@
 }
 </script>
 </head>
-  <body>
-    <div id="root"></div>
+  <body class="notranslate" translate="no">
+    <div id="root" class="notranslate" translate="no"></div>
     <script type="module" src="/index.tsx"></script>
   </body>
 </html>

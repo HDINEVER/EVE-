@@ -35,6 +35,7 @@ const App: React.FC = () => {
     <div 
       className="relative w-screen h-screen overflow-hidden select-none"
       style={dynamicStyle}
+      translate="no"
     >
       {/* 3D Layer */}
       <div className="absolute inset-0 z-0">
